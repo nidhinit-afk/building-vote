@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Corp — General Body Meeting Vote</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --gold: #c9a84c;
+    --gold-light: #f0e0a8;
+    --cream: #faf8f3;
+    --white: #ffffff;
+    --border: #e2ddd4;
+    --text: #1a2744;
+    --text-muted: #6b7280;
+    --success: #15803d;
+    --success-bg: #dcfce7;
+    --danger: #b91c1c;
+    --danger-bg: #fee2e2;
+    --warn-bg: #fef9ec;
+    --warn-border: #f0c040;
+    --radius: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .header {
+    background: var(--navy);
+    color: var(--white);
+    text-align: center;
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 3px solid var(--gold);
+  }
+  .header-eyebrow {
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: normal;
+    letter-spacing: 0.01em;
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+  .step { display: none; }
+  .step.active { display: block; }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  label {
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+  label:first-of-type { margin-top: 0; }
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--cream);
+    color: var(--text);
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 13px 20px;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 1rem;
+  }
+  .btn:hover { background: var(--cream); }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+  .btn-primary:hover { background: #243560; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .alert {
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .alert-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fca5a5; }
+  .alert-warn { background: var(--warn-bg); color: #92400e; border: 1px solid var(--warn-border); }
+  .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #86efac; }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .unit-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .chip-open { background: var(--success-bg); color: var(--success); }
+  .chip-voted { background: var(--danger-bg); color: var(--danger); }
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.35s ease; }
+  .position-heading { font-size: 20px; font-weight: normal; margin-bottom: 4px; }
+  .position-desc {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .candidate {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 8px;
+    background: var(--cream);
+  }
+  .candidate:hover { border-color: var(--gold); background: #fffdf5; }
+  .candidate.selected { border-color: var(--gold); background: #fffdf5; box-shadow: 0 0 0 2px var(--gold-light); }
+  .candidate input[type=radio] { accent-color: var(--gold); width: 16px; height: 16px; flex-shrink: 0; }
+  .candidate-name { font-size: 15px; margin-bottom: 2px; }
+  .candidate-bio { font-family: 'Arial', sans-serif; font-size: 12px; color: var(--text-muted); }
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-label { color: var(--text-muted); }
+  .review-val { font-weight: 600; color: var(--text); text-align: right; max-width: 60%; }
+  .done-hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+  .done-icon { font-size: 52px; margin-bottom: 1rem; }
+  .done-hero h2 { font-size: 24px; font-weight: normal; margin-bottom: 6px; }
+  .done-hero p { font-family: 'Arial', sans-serif; font-size: 14px; color: var(--text-muted); }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .result-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+  .result-pos { font-family: 'Arial', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .result-leader { font-size: 14px; }
+  .result-count { font-family: 'Arial', sans-serif; font-size: 11px; color: var(--text-muted); }
+  .admin-section { margin-bottom: 1.5rem; }
+  .admin-position { font-size: 16px; font-weight: normal; margin-bottom: 0.75rem; }
+  .admin-bar-row { margin-bottom: 10px; }
+  .admin-bar-meta { display: flex; justify-content: space-between; font-family: 'Arial', sans-serif; font-size: 12px; margin-bottom: 4px; }
+  .admin-bar-name { color: var(--text); }
+  .admin-bar-count { color: var(--text-muted); }
+  .admin-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .admin-bar-fill { height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.4s ease; }
+  .admin-bar-fill.leader { background: var(--navy); }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .stat-num { font-size: 26px; font-weight: normal; color: var(--navy); }
+  .stat-label { font-family: 'Arial', sans-serif; font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .voted-list { margin-top: 1rem; }
+  .voted-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-family: 'Arial', sans-serif; font-size: 12px; }
+  .voted-item:last-child { border-bottom: none; }
+  .voted-unit { font-weight: 600; color: var(--navy); }
+  .voted-who { color: var(--text-muted); }
+  .voted-time { color: var(--text-muted); font-size: 11px; }
+  .admin-toggle {
+    position: fixed; bottom: 16px; right: 16px;
+    background: var(--navy); color: var(--white);
+    border: none; border-radius: 99px;
+    padding: 10px 18px;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.05em;
+    box-shadow: 0 2px 12px rgba(26,39,68,0.25);
+    z-index: 100;
+  }
+  .loader { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .loader-dark { border-color: rgba(26,39,68,0.2); border-top-color: var(--navy); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 480px) {
+    .result-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Annual General Body Meeting</div>
+  <h1>Building Corporation — Official Ballot</h1>
+  <p>Each unit is entitled to one vote. All submissions are final.</p>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: Voter ID -->
+  <div id="step-voter" class="step active">
+    <div id="voter-alert" style="display:none"></div>
+    <div class="card">
+      <div class="card-title">Voter identification</div>
+      <label>Full name</label>
+      <input type="text" id="voter-name" placeholder="e.g. Sarah Johnson" autocomplete="name" />
+      <label>Phone number</label>
+      <input type="tel" id="voter-phone" placeholder="e.g. 416-555-0192" autocomplete="tel" />
+      <label>Floor</label>
+      <div class="unit-grid">
+        <select id="unit-floor" onchange="checkUnit()">
+          <option value="">Select floor</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+          <option>9</option><option>10</option>
+        </select>
+        <select id="unit-letter" onchange="checkUnit()">
+          <option value="">Select unit</option>
+          <option value="A">Unit A</option><option value="B">Unit B</option>
+          <option value="C">Unit C</option><option value="D">Unit D</option>
+        </select>
+      </div>
+      <div id="unit-chip" style="display:none"></div>
+    </div>
+    <button class="btn btn-primary" onclick="proceedToVote()">
+      Continue to ballot &rarr;
+    </button>
+  </div>
+
+  <!-- STEP 2: Ballot -->
+  <div id="step-vote" class="step">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="progress-label">Position 1 of 5</span>
+        <span id="progress-pct">20%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:20%"></div></div>
+    </div>
+    <div class="card">
+      <div id="position-container"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="btn-back" onclick="prevPos()" style="display:none">&larr; Back</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextPos()" style="grid-column:1/-1">Next &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Review -->
+  <div id="step-review" class="step">
+    <div class="card">
+      <div class="card-title">Voter details</div>
+      <div class="review-row"><span class="review-label">Name</span><span class="review-val" id="rv-name"></span></div>
+      <div class="review-row"><span class="review-label">Phone</span><span class="review-val" id="rv-phone"></span></div>
+      <div class="review-row"><span class="review-label">Unit</span><span class="review-val" id="rv-unit"></span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Your selections</div>
+      <div id="rv-votes"></div>
+    </div>
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <span>Once submitted, your vote cannot be changed. Each unit may only vote once. Please review carefully.</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="goBackToVote()">Edit votes</button>
+      <button class="btn btn-primary" id="btn-submit" onclick="submitVote()">Submit ballot</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Done -->
+  <div id="step-done" class="step">
+    <div class="done-hero">
+      <div class="done-icon">✅</div>
+      <h2>Ballot submitted</h2>
+      <p id="done-msg"></p>
+    </div>
+    <div class="alert alert-success">
+      <span class="alert-icon">🔒</span>
+      <span>Unit <strong id="done-unit"></strong> has been recorded. Your vote is final and securely stored.</span>
+    </div>
+    <div class="card">
+      <div class="card-title">Current standings</div>
+      <div class="result-grid" id="done-results"></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Admin -->
+  <div id="step-admin" class="step">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div>
+        <div class="header-eyebrow" style="color:var(--gold)">Admin panel</div>
+        <h2 style="font-size:20px;font-weight:normal">Live results</h2>
+      </div>
+      <button class="btn" onclick="showStep('step-voter')" style="width:auto;margin-top:0;padding:8px 14px;font-size:12px">← Back</button>
+    </div>
+    <div id="admin-content"><div style="text-align:center;padding:2rem;color:var(--text-muted)"><div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…</div></div>
+  </div>
+
+</div>
+
+<button class="admin-toggle" onclick="openAdmin()">⚙ Admin</button>
+
+<script>
+const SUPABASE_URL = 'https://nvtjamohvxzdzlmteeap.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_WxNYg1SrLk68QGqtkpB43Q_-ZPBJPaR';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const POSITIONS = [
+  { id: 'president', title: 'President', desc: 'Chief executive officer of the building corporation',
+    candidates: [
+      { name: 'James Nguyen', bio: 'Resident since 2018, former HOA chair' },
+      { name: 'Priya Sharma', bio: 'Property manager with 10 years experience' },
+      { name: 'Marco Deluca', bio: 'Retired civil engineer, floor 7 representative' }
+    ]},
+  { id: 'secretary', title: 'Secretary', desc: 'Records meeting minutes and manages official correspondence',
+    candidates: [
+      { name: 'Aisha Okonkwo', bio: 'Administrative professional, unit 3C' },
+      { name: 'David Park', bio: 'Freelance writer and longtime resident' },
+      { name: 'Linda Torres', bio: 'Retired teacher, 5 years in the building' }
+    ]},
+  { id: 'treasurer', title: 'Treasurer', desc: 'Manages the building fund and financial reporting',
+    candidates: [
+      { name: 'Robert Chen', bio: 'Certified accountant, unit 5B' },
+      { name: 'Fatima Al-Hassan', bio: 'Financial analyst, Bay Street firm' },
+      { name: 'Kevin Murphy', bio: 'Small business owner, floor 9' }
+    ]},
+  { id: 'maintenance_director', title: 'Maintenance Director', desc: 'Oversees building upkeep, repairs, and contractors',
+    candidates: [
+      { name: 'Sergei Volkov', bio: 'Retired contractor, 20 years experience' },
+      { name: 'Nadia Williams', bio: 'Project manager in the construction sector' },
+      { name: 'Tom Bertrand', bio: 'Resident handyman and floor 2 representative' }
+    ]},
+  { id: 'communications_director', title: 'Communications Director', desc: 'Community newsletter, notices, and resident relations',
+    candidates: [
+      { name: 'Sophie Laurent', bio: 'Graphic designer, unit 8A' },
+      { name: 'Raj Patel', bio: 'Marketing professional, longtime resident' },
+      { name: 'Grace Kim', bio: 'Journalist, moved in 2021' }
+    ]}
+];
+
+let currentPos = 0;
+let selections = {};
+let voterInfo = {};
+
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showAlert(id, type, html) {
+  const el = document.getElementById(id);
+  el.className = 'alert alert-' + type;
+  el.innerHTML = html;
+  el.style.display = 'flex';
+}
+
+async function checkUnit() {
+  const floor = document.getElementById('unit-floor').value;
+  const letter = document.getElementById('unit-letter').value;
+  const chip = document.getElementById('unit-chip');
+  if (!floor || !letter) { chip.style.display = 'none'; return; }
+  const unit = floor + letter;
+  chip.style.display = 'inline-flex';
+  chip.innerHTML = '<span>Checking…</span>';
+  chip.className = 'unit-chip';
+  const { data } = await db.from('votes').select('unit').eq('unit', unit).maybeSingle();
+  if (data) {
+    chip.className = 'unit-chip chip-voted';
+    chip.innerHTML = '🔴 Unit ' + unit + ' has already voted';
+  } else {
+    chip.className = 'unit-chip chip-open';
+    chip.innerHTML = '🟢 Unit ' + unit + ' — eligible to vote';
+  }
+}
+
+async function proceedToVote() {
+  const name = document.getElementById('voter-name').value.trim();
+  const phone = document.getElementById('voter-phone').value.trim();
+  const floor = document.getElementById('unit-floor').value;
+  const letter = document.getElementById('unit-letter').value;
+
+  if (!name) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please enter your full name.</span>'); return; }
+  if (!phone) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please enter your phone number.</span>'); return; }
+  if (!floor || !letter) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please select your floor and unit.</span>'); return; }
+
+  const unit = floor + letter;
+  const { data } = await db.from('votes').select('unit').eq('unit', unit).maybeSingle();
+  if (data) {
+    showAlert('voter-alert', 'danger', '<span class="alert-icon">🔴</span><span>Unit ' + unit + ' has already submitted a ballot. Each unit may only vote once. If you believe this is an error, please contact the building administrator.</span>');
+    return;
+  }
+
+  document.getElementById('voter-alert').style.display = 'none';
+  voterInfo = { name, phone, unit, floor, letter };
+  currentPos = 0;
+  selections = {};
+  showStep('step-vote');
+  renderPosition();
+}
+
+function renderPosition() {
+  const pos = POSITIONS[currentPos];
+  const pct = Math.round(((currentPos + 1) / POSITIONS.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'Position ' + (currentPos + 1) + ' of ' + POSITIONS.length;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('btn-back').style.display = currentPos === 0 ? 'none' : 'flex';
+  document.getElementById('btn-next').style.gridColumn = currentPos === 0 ? '1 / -1' : 'auto';
+  const isLast = currentPos === POSITIONS.length - 1;
+  document.getElementById('btn-next').textContent = isLast ? 'Review ballot →' : 'Next →';
+
+  const sel = selections[pos.id] || null;
+  let html = '<div class="position-heading">' + pos.title + '</div>';
+  html += '<div class="position-desc">' + pos.desc + '</div>';
+  pos.candidates.forEach(c => {
+    const checked = sel === c.name;
+    html += `<label class="candidate ${checked ? 'selected' : ''}" onclick="selectCandidate('${pos.id}', '${c.name}', this)">
+      <input type="radio" name="pos" value="${c.name}" ${checked ? 'checked' : ''} style="pointer-events:none">
+      <div>
+        <div class="candidate-name">${c.name}</div>
+        <div class="candidate-bio">${c.bio}</div>
+      </div>
+    </label>`;
+  });
+  document.getElementById('position-container').innerHTML = html;
+}
+
+function selectCandidate(posId, name, el) {
+  selections[posId] = name;
+  el.closest('.card').querySelectorAll('.candidate').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function nextPos() {
+  const pos = POSITIONS[currentPos];
+  if (!selections[pos.id]) {
+    const existing = document.querySelector('.selection-warn');
+    if (!existing) {
+      const warn = document.createElement('div');
+      warn.className = 'alert alert-warn selection-warn';
+      warn.style.marginTop = '12px';
+      warn.innerHTML = '<span class="alert-icon">⚠️</span><span>Please select a candidate for ' + pos.title + ' before continuing.</span>';
+      document.querySelector('.card').appendChild(warn);
+    }
+    return;
+  }
+  if (currentPos < POSITIONS.length - 1) {
+    currentPos++;
+    renderPosition();
+  } else {
+    buildReview();
+    showStep('step-review');
+  }
+}
+
+function prevPos() {
+  if (currentPos > 0) { currentPos--; renderPosition(); }
+}
+
+function goBackToVote() {
+  currentPos = POSITIONS.length - 1;
+  showStep('step-vote');
+  renderPosition();
+}
+
+function buildReview() {
+  document.getElementById('rv-name').textContent = voterInfo.name;
+  document.getElementById('rv-phone').textContent = voterInfo.phone;
+  document.getElementById('rv-unit').textContent = 'Unit ' + voterInfo.unit;
+  let html = '';
+  POSITIONS.forEach(pos => {
+    html += '<div class="review-row"><span class="review-label">' + pos.title + '</span><span class="review-val">' + (selections[pos.id] || '—') + '</span></div>';
+  });
+  document.getElementById('rv-votes').innerHTML = html;
+}
+
+async function submitVote() {
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loader"></div> Submitting…';
+
+  const payload = {
+    unit: voterInfo.unit,
+    voter_name: voterInfo.name,
+    voter_phone: voterInfo.phone,
+    president: selections['president'],
+    secretary: selections['secretary'],
+    treasurer: selections['treasurer'],
+    maintenance_director: selections['maintenance_director'],
+    communications_director: selections['communications_director']
+  };
+
+  const { error } = await db.from('votes').insert(payload);
+
+  if (error) {
+    btn.disabled = false;
+    btn.textContent = 'Submit ballot';
+    if (error.code === '23505') {
+      alert('Unit ' + voterInfo.unit + ' has already voted. Duplicate submissions are not allowed.');
+    } else {
+      alert('Submission failed: ' + error.message + '. Please try again.');
+    }
+    return;
+  }
+
+  document.getElementById('done-unit').textContent = 'Unit ' + voterInfo.unit;
+  document.getElementById('done-msg').textContent = 'Thank you, ' + voterInfo.name + '. Your ballot has been securely recorded.';
+
+  const { data: allVotes } = await db.from('votes').select('president,secretary,treasurer,maintenance_director,communications_director');
+  const tallies = {};
+  POSITIONS.forEach(p => tallies[p.id] = {});
+  (allVotes || []).forEach(row => {
+    POSITIONS.forEach(p => {
+      if (row[p.id]) tallies[p.id][row[p.id]] = (tallies[p.id][row[p.id]] || 0) + 1;
+    });
+  });
+  let resHtml = '';
+  POSITIONS.forEach(pos => {
+    const t = tallies[pos.id];
+    const leader = Object.entries(t).sort((a, b) => b[1] - a[1])[0];
+    resHtml += '<div class="result-card"><div class="result-pos">' + pos.title + '</div><div class="result-leader">' + (leader ? leader[0] : '—') + '</div><div class="result-count">' + (leader ? leader[1] + ' vote' + (leader[1] !== 1 ? 's' : '') : '') + '</div></div>';
+  });
+  document.getElementById('done-results').innerHTML = resHtml;
+  showStep('step-done');
+}
+
+async function openAdmin() {
+  showStep('step-admin');
+  const { data: allVotes, error } = await db.from('votes').select('*').order('submitted_at', { ascending: false });
+  if (error || !allVotes) {
+    document.getElementById('admin-content').innerHTML = '<div class="alert alert-danger"><span>Failed to load results.</span></div>';
+    return;
+  }
+  const total = allVotes.length;
+  const tallies = {};
+  POSITIONS.forEach(p => tallies[p.id] = {});
+  allVotes.forEach(row => {
+    POSITIONS.forEach(p => {
+      if (row[p.id]) tallies[p.id][row[p.id]] = (tallies[p.id][row[p.id]] || 0) + 1;
+    });
+  });
+
+  let html = '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="stat-num">' + total + '</div><div class="stat-label">Votes cast</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">40</div><div class="stat-label">Total units</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">' + Math.round((total / 40) * 100) + '%</div><div class="stat-label">Participation</div></div>';
+  html += '</div>';
+
+  POSITIONS.forEach(pos => {
+    const t = tallies[pos.id];
+    const posTotal = Object.values(t).reduce((a, b) => a + b, 0);
+    const sorted = Object.entries(t).sort((a, b) => b[1] - a[1]);
+    const leaderName = sorted[0]?.[0];
+    html += '<div class="card admin-section"><div class="card-title">' + pos.title + '</div>';
+    pos.candidates.forEach(c => {
+      const votes = t[c.name] || 0;
+      const pct = posTotal > 0 ? Math.round((votes / posTotal) * 100) : 0;
+      const isLeader = c.name === leaderName && votes > 0;
+      html += '<div class="admin-bar-row"><div class="admin-bar-meta"><span class="admin-bar-name">' + c.name + (isLeader ? ' 🏆' : '') + '</span><span class="admin-bar-count">' + votes + ' vote' + (votes !== 1 ? 's' : '') + ' · ' + pct + '%</span></div><div class="admin-bar-bg"><div class="admin-bar-fill' + (isLeader ? ' leader' : '') + '" style="width:' + pct + '%"></div></div></div>';
+    });
+    html += '</div>';
+  });
+
+  html += '<div class="card"><div class="card-title">Votes log — ' + total + ' units</div><div class="voted-list">';
+  if (allVotes.length === 0) {
+    html += '<div style="color:var(--text-muted);font-family:Arial,sans-serif;font-size:13px;padding:1rem 0">No votes yet.</div>';
+  }
+  allVotes.forEach(row => {
+    const t = new Date(row.submitted_at);
+    const timeStr = t.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) + ' · ' + t.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+    html += '<div class="voted-item"><span class="voted-unit">Unit ' + row.unit + '</span><span class="voted-who">' + row.voter_name + '</span><span class="voted-time">' + timeStr + '</span></div>';
+  });
+  html += '</div></div>';
+
+  document.getElementById('admin-content').innerHTML = html;
+}
+</script>
+</body>
+</html>

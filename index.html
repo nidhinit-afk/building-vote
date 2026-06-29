@@ -47,14 +47,13 @@
     appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
   }
   input:focus, select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-light); }
-  .otp-input { font-size: 28px; letter-spacing: 0.35em; text-align: center; font-weight: 600; font-family: 'Courier New', monospace; }
   .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; padding: 13px 20px; font-family: Arial, sans-serif;
     font-size: 13px; letter-spacing: 0.05em; font-weight: 600;
     border-radius: var(--radius); border: 1px solid var(--border);
     background: var(--white); color: var(--text); cursor: pointer;
-    transition: all 0.15s; margin-top: 1rem;
+    transition: all 0.15s; margin-top: 1rem; text-decoration: none;
   }
   .btn:hover { background: var(--cream); }
   .btn-primary { background: var(--navy); color: var(--white); border-color: var(--navy); }
@@ -85,11 +84,12 @@
   .done-hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
   .done-icon { font-size: 52px; margin-bottom: 1rem; }
   .done-hero h2 { font-size: 24px; font-weight: normal; margin-bottom: 6px; }
-  .done-hero p { font-family: Arial, sans-serif; font-size: 14px; color: var(--text-muted); }
+  .done-hero p { font-family: Arial, sans-serif; font-size: 14px; color: var(--text-muted); line-height: 1.6; }
   .sealed-box { background: var(--navy); color: var(--white); border-radius: var(--radius); padding: 1.5rem; text-align: center; margin-top: 1rem; }
   .sealed-box .icon { font-size: 32px; margin-bottom: 10px; }
   .sealed-box h3 { font-size: 16px; font-weight: normal; margin-bottom: 6px; }
-  .sealed-box p { font-family: Arial, sans-serif; font-size: 13px; color: rgba(255,255,255,0.65); }
+  .sealed-box p { font-family: Arial, sans-serif; font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+  .email-sent-icon { font-size: 48px; text-align: center; margin: 1.5rem 0 1rem; }
   .admin-toggle { position: fixed; bottom: 16px; right: 16px; background: var(--navy); color: var(--white); border: none; border-radius: 99px; padding: 10px 18px; font-family: Arial, sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: 0.05em; box-shadow: 0 2px 12px rgba(26,39,68,0.25); z-index: 100; }
   .loader { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
   .loader-dark { border-color: rgba(26,39,68,0.15); border-top-color: var(--navy); }
@@ -108,9 +108,8 @@
   .voted-unit { font-weight: 600; color: var(--navy); min-width: 60px; }
   .voted-who { color: var(--text-muted); flex: 1; padding: 0 10px; }
   .voted-time { color: var(--text-muted); font-size: 11px; white-space: nowrap; }
-  .resend-link { font-family: Arial, sans-serif; font-size: 12px; color: var(--gold); text-decoration: underline; cursor: pointer; background: none; border: none; padding: 0; margin-top: 10px; display: inline-block; }
-  .resend-link:disabled { color: var(--text-muted); cursor: not-allowed; text-decoration: none; }
-  .admin-lock { max-width: 320px; margin: 3rem auto; }
+  .admin-lock { max-width: 340px; margin: 3rem auto; }
+  .spinner-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 40vh; gap: 16px; font-family: Arial, sans-serif; font-size: 14px; color: var(--text-muted); }
   @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
@@ -124,54 +123,66 @@
 
 <div class="container">
 
+  <!-- STEP: Detecting magic link (shown on return from email) -->
+  <div id="step-detecting" class="step">
+    <div class="spinner-page">
+      <div class="loader loader-dark" style="width:28px;height:28px;border-width:3px"></div>
+      <span>Verifying your identity…</span>
+    </div>
+  </div>
+
   <!-- STEP 1: Email entry -->
   <div id="step-email" class="step active">
     <div id="email-alert" style="display:none"></div>
     <div class="card">
       <div class="card-title">Voter verification</div>
       <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6">
-        Enter the email address registered with the building. We'll send you a one-time code to verify your identity.
+        Enter the email address registered with the building. We'll send you a secure sign-in link to access your ballot.
       </p>
       <label>Email address</label>
-      <input type="email" id="voter-email" placeholder="you@example.com" autocomplete="email" />
+      <input type="email" id="voter-email" placeholder="you@example.com" autocomplete="email"
+        onkeydown="if(event.key==='Enter') sendMagicLink()" />
     </div>
-    <button class="btn btn-primary" id="btn-send-otp" onclick="sendOTP()">
-      Send verification code &rarr;
+    <button class="btn btn-primary" id="btn-send" onclick="sendMagicLink()">
+      Send my ballot link &rarr;
     </button>
   </div>
 
-  <!-- STEP 2: OTP verification -->
-  <div id="step-otp" class="step">
-    <div id="otp-alert" style="display:none"></div>
-    <div class="card">
-      <div class="card-title">Enter verification code</div>
-      <div class="alert alert-info" style="margin-bottom:1rem">
-        <span>📧</span>
-        <span>A 6-digit code was sent to <strong id="otp-email-display"></strong>. Check your inbox (and spam folder).</span>
-      </div>
-      <label>6-digit code</label>
-      <input type="text" id="otp-code" class="otp-input" placeholder="— — — — — —" maxlength="6" inputmode="numeric" autocomplete="one-time-code" />
-      <button class="resend-link" id="btn-resend" onclick="resendOTP()">Resend code</button>
+  <!-- STEP 2: Check your email -->
+  <div id="step-check-email" class="step">
+    <div class="card" style="text-align:center">
+      <div class="email-sent-icon">📬</div>
+      <div class="card-title" style="text-align:center">Check your inbox</div>
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:var(--text);margin-bottom:8px">
+        A sign-in link was sent to
+      </p>
+      <p style="font-family:Arial,sans-serif;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:1.25rem" id="sent-email-display"></p>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text-muted);line-height:1.6">
+        Open the email and tap <strong>"Sign in"</strong>. You'll be brought straight to your ballot.<br><br>
+        The link expires in <strong>60 minutes</strong> and can only be used once.
+      </p>
     </div>
-    <button class="btn btn-primary" id="btn-verify-otp" onclick="verifyOTP()">
-      Verify &amp; continue &rarr;
-    </button>
+    <div class="alert alert-warn">
+      <span>💡</span>
+      <span>Can't find the email? Check your <strong>spam or junk folder</strong>. The sender will be <em>no-reply@mail.app.supabase.io</em></span>
+    </div>
     <button class="btn" onclick="showStep('step-email')" style="margin-top:8px">
       &larr; Use a different email
     </button>
   </div>
 
-  <!-- STEP 3: Voter name -->
+  <!-- STEP 3: Voter name (after magic link verified) -->
   <div id="step-name" class="step">
     <div id="name-alert" style="display:none"></div>
     <div class="card">
-      <div class="card-title">One last thing</div>
-      <div class="alert alert-success" style="margin-bottom:1rem">
+      <div class="card-title">Identity confirmed</div>
+      <div class="alert alert-success" style="margin-bottom:1.25rem">
         <span>✅</span>
-        <span>Email verified. Unit <strong id="verified-unit"></strong> confirmed.</span>
+        <span>Email verified. Unit <strong id="verified-unit"></strong> — eligible to vote.</span>
       </div>
       <label>Your full name</label>
-      <input type="text" id="voter-name" placeholder="e.g. Sarah Johnson" autocomplete="name" />
+      <input type="text" id="voter-name" placeholder="e.g. Sarah Johnson" autocomplete="name"
+        onkeydown="if(event.key==='Enter') proceedToBallot()" />
     </div>
     <button class="btn btn-primary" onclick="proceedToBallot()">
       Open my ballot &rarr;
@@ -210,7 +221,7 @@
     </div>
     <div class="alert alert-warn">
       <span>⚠️</span>
-      <span>Once submitted, your vote cannot be changed. Each unit may only vote once. Please review carefully before submitting.</span>
+      <span>Once submitted, your vote <strong>cannot be changed</strong>. Each unit may only vote once. Please review carefully.</span>
     </div>
     <div class="btn-row">
       <button class="btn" onclick="goBackToVote()">Edit votes</button>
@@ -232,7 +243,7 @@
     <div class="sealed-box">
       <div class="icon">🔐</div>
       <h3>Results are sealed</h3>
-      <p>Vote tallies will be revealed by the board at the General Body Meeting. Thank you for participating.</p>
+      <p>Vote tallies will be revealed by the board at the General Body Meeting. Thank you for participating in your building's democracy.</p>
     </div>
   </div>
 
@@ -240,11 +251,12 @@
   <div id="step-admin-lock" class="step">
     <div class="admin-lock">
       <div class="card">
-        <div class="card-title">Board access</div>
+        <div class="card-title">Board access only</div>
         <label>Admin password</label>
-        <input type="password" id="admin-password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkAdminPassword()" />
+        <input type="password" id="admin-password" placeholder="Enter password"
+          onkeydown="if(event.key==='Enter') checkAdminPassword()" />
         <div id="admin-lock-alert" style="display:none;margin-top:10px"></div>
-        <button class="btn btn-primary" onclick="checkAdminPassword()" style="margin-top:1rem">Unlock results</button>
+        <button class="btn btn-primary" onclick="checkAdminPassword()">Unlock results</button>
       </div>
       <button class="btn" onclick="showStep('step-email')" style="margin-top:8px">&larr; Back to voting</button>
     </div>
@@ -252,7 +264,7 @@
 
   <!-- STEP 8: Admin results -->
   <div id="step-admin" class="step">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
       <div>
         <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Board only</div>
         <h2 style="font-size:20px;font-weight:normal">Live results</h2>
@@ -263,9 +275,7 @@
       </div>
     </div>
     <div id="admin-content">
-      <div style="text-align:center;padding:2rem;color:var(--text-muted)">
-        <div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…
-      </div>
+      <div class="spinner-page"><div class="loader loader-dark"></div><span>Loading…</span></div>
     </div>
   </div>
 
@@ -277,6 +287,8 @@
 const SUPABASE_URL = 'https://nvtjamohvxzdzlmteeap.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_WxNYg1SrLk68QGqtkpB43Q_-ZPBJPaR';
 const ADMIN_PASSWORD = '1234Tree';
+const REDIRECT_URL = 'https://nidhinit-afk.github.io/building-vote/';
+
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -317,6 +329,53 @@ let currentPos = 0;
 let selections = {};
 let voterInfo = { email: '', unit: '', name: '' };
 
+// ── On page load: detect magic link callback ──
+window.addEventListener('load', async () => {
+  const hash = window.location.hash;
+  const params = new URLSearchParams(window.location.search);
+
+  // Supabase puts tokens in the URL hash after magic link click
+  if (hash && (hash.includes('access_token') || hash.includes('error'))) {
+    showStep('step-detecting');
+    const { data, error } = await db.auth.getSession();
+    // Clear the hash from URL cleanly
+    history.replaceState(null, '', window.location.pathname);
+
+    if (error || !data.session) {
+      showStep('step-email');
+      showAlert('email-alert', 'danger', '<span>✖</span><span>The sign-in link has expired or already been used. Please request a new one.</span>');
+      return;
+    }
+
+    const email = data.session.user.email.toLowerCase();
+    await handleVerifiedEmail(email);
+  }
+});
+
+async function handleVerifiedEmail(email) {
+  // Check whitelist
+  const { data: wl } = await db.from('voter_whitelist').select('unit').eq('email', email).maybeSingle();
+  if (!wl) {
+    showStep('step-email');
+    showAlert('email-alert', 'danger', '<span>🚫</span><span>This email is not registered as a voter. Please use the email on file with building administration.</span>');
+    return;
+  }
+
+  // Check if already voted
+  const { data: voted } = await db.from('votes').select('unit').eq('unit', wl.unit).maybeSingle();
+  if (voted) {
+    showStep('step-email');
+    showAlert('email-alert', 'danger', '<span>🔴</span><span>Unit <strong>' + wl.unit + '</strong> has already submitted a ballot. Each unit may only vote once. If you believe this is an error, contact the building administrator.</span>');
+    return;
+  }
+
+  voterInfo.email = email;
+  voterInfo.unit = wl.unit;
+  document.getElementById('verified-unit').textContent = wl.unit;
+  showStep('step-name');
+  setTimeout(() => document.getElementById('voter-name').focus(), 100);
+}
+
 function showStep(id) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -330,9 +389,7 @@ function showAlert(id, type, msg) {
   el.style.display = 'flex';
 }
 
-function hideAlert(id) {
-  document.getElementById(id).style.display = 'none';
-}
+function hideAlert(id) { document.getElementById(id).style.display = 'none'; }
 
 function setBtn(id, loading, text) {
   const btn = document.getElementById(id);
@@ -340,79 +397,50 @@ function setBtn(id, loading, text) {
   btn.innerHTML = loading ? '<div class="loader"></div> ' + text : text;
 }
 
-// ── STEP 1: Send OTP ──
-async function sendOTP() {
+// ── Send magic link ──
+async function sendMagicLink() {
   const email = document.getElementById('voter-email').value.trim().toLowerCase();
   if (!email || !email.includes('@')) {
     showAlert('email-alert', 'danger', '<span>✖</span><span>Please enter a valid email address.</span>');
     return;
   }
   hideAlert('email-alert');
-  setBtn('btn-send-otp', true, 'Checking…');
+  setBtn('btn-send', true, 'Checking…');
 
-  // Check whitelist
-  const { data: wl, error: wlErr } = await db.from('voter_whitelist').select('unit, email').eq('email', email).maybeSingle();
-  if (wlErr || !wl) {
-    showAlert('email-alert', 'danger', '<span>🚫</span><span>This email is not registered as a voter. Please use the email address on file with the building administration.</span>');
-    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
+  // Check whitelist first
+  const { data: wl } = await db.from('voter_whitelist').select('unit').eq('email', email).maybeSingle();
+  if (!wl) {
+    showAlert('email-alert', 'danger', '<span>🚫</span><span>This email is not registered as a voter. Please use the email address on file with building administration.</span>');
+    setBtn('btn-send', false, 'Send my ballot link &rarr;');
     return;
   }
 
-  // Check if unit already voted
+  // Check if already voted
   const { data: voted } = await db.from('votes').select('unit').eq('unit', wl.unit).maybeSingle();
   if (voted) {
-    showAlert('email-alert', 'danger', '<span>🔴</span><span>Unit <strong>' + wl.unit + '</strong> has already submitted a ballot. Each unit may only vote once. If you believe this is an error, contact the building administrator.</span>');
-    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
+    showAlert('email-alert', 'danger', '<span>🔴</span><span>Unit <strong>' + wl.unit + '</strong> has already submitted a ballot. Each unit may only vote once.</span>');
+    setBtn('btn-send', false, 'Send my ballot link &rarr;');
     return;
   }
 
-  // Send OTP via Supabase Auth
-  const { error: otpErr } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-  if (otpErr) {
-    showAlert('email-alert', 'danger', '<span>✖</span><span>Failed to send code: ' + otpErr.message + '. Please try again.</span>');
-    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
-    return;
-  }
+  // Send magic link
+  const { error } = await db.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: REDIRECT_URL, shouldCreateUser: true }
+  });
 
-  voterInfo.email = email;
-  voterInfo.unit = wl.unit;
-  document.getElementById('otp-email-display').textContent = email;
-  setBtn('btn-send-otp', false, 'Send verification code &rarr;');
-  showStep('step-otp');
-}
-
-// ── STEP 2: Verify OTP ──
-async function verifyOTP() {
-  const code = document.getElementById('otp-code').value.trim();
-  if (code.length !== 6) {
-    showAlert('otp-alert', 'danger', '<span>✖</span><span>Please enter the 6-digit code from your email.</span>');
-    return;
-  }
-  hideAlert('otp-alert');
-  setBtn('btn-verify-otp', true, 'Verifying…');
-
-  const { error } = await db.auth.verifyOtp({ email: voterInfo.email, token: code, type: 'email' });
   if (error) {
-    showAlert('otp-alert', 'danger', '<span>✖</span><span>Invalid or expired code. Please check your email and try again.</span>');
-    setBtn('btn-verify-otp', false, 'Verify &amp; continue &rarr;');
+    showAlert('email-alert', 'danger', '<span>✖</span><span>Could not send link: ' + error.message + '. Please try again.</span>');
+    setBtn('btn-send', false, 'Send my ballot link &rarr;');
     return;
   }
 
-  document.getElementById('verified-unit').textContent = voterInfo.unit;
-  setBtn('btn-verify-otp', false, 'Verify &amp; continue &rarr;');
-  showStep('step-name');
+  document.getElementById('sent-email-display').textContent = email;
+  setBtn('btn-send', false, 'Send my ballot link &rarr;');
+  showStep('step-check-email');
 }
 
-async function resendOTP() {
-  const btn = document.getElementById('btn-resend');
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-  await db.auth.signInWithOtp({ email: voterInfo.email, options: { shouldCreateUser: true } });
-  btn.textContent = 'Code resent ✓';
-  setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend code'; }, 30000);
-}
-
-// ── STEP 3: Name & proceed ──
+// ── Name & proceed to ballot ──
 function proceedToBallot() {
   const name = document.getElementById('voter-name').value.trim();
   if (!name) {
@@ -427,7 +455,7 @@ function proceedToBallot() {
   renderPosition();
 }
 
-// ── STEP 4: Ballot ──
+// ── Ballot ──
 function renderPosition() {
   const pos = POSITIONS[currentPos];
   const pct = Math.round(((currentPos + 1) / POSITIONS.length) * 100);
@@ -490,7 +518,7 @@ function goBackToVote() {
   renderPosition();
 }
 
-// ── STEP 5: Review ──
+// ── Review ──
 function buildReview() {
   document.getElementById('rv-name').textContent = voterInfo.name;
   document.getElementById('rv-email').textContent = voterInfo.email;
@@ -502,10 +530,9 @@ function buildReview() {
   document.getElementById('rv-votes').innerHTML = html;
 }
 
-// ── STEP 6: Submit ──
+// ── Submit ──
 async function submitVote() {
   setBtn('btn-submit', true, 'Submitting…');
-
   const payload = {
     unit: voterInfo.unit,
     email: voterInfo.email,
@@ -521,15 +548,16 @@ async function submitVote() {
   if (error) {
     setBtn('btn-submit', false, 'Submit ballot');
     if (error.code === '23505') {
-      showAlert('otp-alert', 'danger', '<span>🔴</span><span>Unit ' + voterInfo.unit + ' has already voted.</span>');
+      showAlert('email-alert', 'danger', '<span>🔴</span><span>Unit ' + voterInfo.unit + ' has already voted.</span>');
+      showStep('step-email');
     } else {
-      alert('Submission error: ' + error.message);
+      alert('Submission error: ' + error.message + '. Please try again.');
     }
     return;
   }
 
   document.getElementById('done-unit').textContent = 'Unit ' + voterInfo.unit;
-  document.getElementById('done-msg').textContent = 'Thank you, ' + voterInfo.name + '. Your ballot has been securely recorded and sealed.';
+  document.getElementById('done-msg').textContent = 'Thank you, ' + voterInfo.name + '. Your ballot has been securely recorded and sealed until the meeting.';
   showStep('step-done');
 }
 
@@ -547,8 +575,7 @@ function checkAdminPassword() {
 }
 
 async function loadAdmin() {
-  document.getElementById('admin-content').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)"><div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…</div>';
-
+  document.getElementById('admin-content').innerHTML = '<div class="spinner-page"><div class="loader loader-dark"></div><span>Loading…</span></div>';
   const { data: allVotes } = await db.from('votes').select('*').order('submitted_at', { ascending: false });
   const votes = allVotes || [];
   const total = votes.length;
@@ -583,7 +610,7 @@ async function loadAdmin() {
   });
 
   html += '<div class="card"><div class="card-title">Voter log — ' + total + ' submitted</div><div>';
-  if (votes.length === 0) {
+  if (!votes.length) {
     html += '<p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text-muted);padding:1rem 0">No votes yet.</p>';
   }
   votes.forEach(row => {

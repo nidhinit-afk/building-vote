@@ -24,240 +24,94 @@
     --radius: 10px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Georgia', serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); min-height: 100vh; }
   .header {
-    background: var(--navy);
-    color: var(--white);
-    text-align: center;
-    padding: 2rem 1.5rem 1.5rem;
+    background: var(--navy); color: var(--white);
+    text-align: center; padding: 2rem 1.5rem 1.5rem;
     border-bottom: 3px solid var(--gold);
   }
-  .header-eyebrow {
-    font-family: 'Arial', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-  .header h1 {
-    font-size: clamp(20px, 5vw, 28px);
-    font-weight: normal;
-    letter-spacing: 0.01em;
-    margin-bottom: 6px;
-  }
-  .header p {
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-  }
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
-  }
+  .header-eyebrow { font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .header h1 { font-size: clamp(18px, 5vw, 26px); font-weight: normal; margin-bottom: 6px; }
+  .header p { font-family: Arial, sans-serif; font-size: 13px; color: rgba(255,255,255,0.65); }
+  .container { max-width: 580px; margin: 0 auto; padding: 1.75rem 1rem 5rem; }
   .step { display: none; }
   .step.active { display: block; }
-  .card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .card-title {
-    font-family: 'Arial', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 1rem;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  label {
-    font-family: 'Arial', sans-serif;
-    font-size: 12px;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 5px;
-    margin-top: 14px;
-  }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .card-title { font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  label { font-family: Arial, sans-serif; font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px; margin-top: 14px; }
   label:first-of-type { margin-top: 0; }
   input, select {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    font-family: 'Arial', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--cream);
-    color: var(--text);
-    appearance: none;
-    -webkit-appearance: none;
-    transition: border-color 0.15s;
+    width: 100%; padding: 11px 13px; font-size: 15px;
+    font-family: Arial, sans-serif; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--cream); color: var(--text);
+    appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
   }
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--gold);
-  }
-  .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  input:focus, select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-light); }
+  .otp-input { font-size: 28px; letter-spacing: 0.35em; text-align: center; font-weight: 600; font-family: 'Courier New', monospace; }
   .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 13px 20px;
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 1rem;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 13px 20px; font-family: Arial, sans-serif;
+    font-size: 13px; letter-spacing: 0.05em; font-weight: 600;
+    border-radius: var(--radius); border: 1px solid var(--border);
+    background: var(--white); color: var(--text); cursor: pointer;
+    transition: all 0.15s; margin-top: 1rem;
   }
   .btn:hover { background: var(--cream); }
-  .btn-primary {
-    background: var(--navy);
-    color: var(--white);
-    border-color: var(--navy);
-  }
+  .btn-primary { background: var(--navy); color: var(--white); border-color: var(--navy); }
   .btn-primary:hover { background: #243560; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
   .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
-  .alert {
-    padding: 12px 14px;
-    border-radius: var(--radius);
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    line-height: 1.5;
-  }
+  .alert { padding: 12px 14px; border-radius: var(--radius); font-family: Arial, sans-serif; font-size: 13px; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
   .alert-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fca5a5; }
   .alert-warn { background: var(--warn-bg); color: #92400e; border: 1px solid var(--warn-border); }
   .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #86efac; }
-  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .unit-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    font-family: 'Arial', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 10px;
-  }
-  .chip-open { background: var(--success-bg); color: var(--success); }
-  .chip-voted { background: var(--danger-bg); color: var(--danger); }
+  .alert-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
   .progress-wrap { margin-bottom: 1.5rem; }
-  .progress-meta {
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Arial', sans-serif;
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
+  .progress-meta { display: flex; justify-content: space-between; font-family: Arial, sans-serif; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
   .progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.35s ease; }
   .position-heading { font-size: 20px; font-weight: normal; margin-bottom: 4px; }
-  .position-desc {
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 1.25rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .candidate {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-bottom: 8px;
-    background: var(--cream);
-  }
+  .position-desc { font-family: Arial, sans-serif; font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .candidate { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; margin-bottom: 8px; background: var(--cream); }
   .candidate:hover { border-color: var(--gold); background: #fffdf5; }
   .candidate.selected { border-color: var(--gold); background: #fffdf5; box-shadow: 0 0 0 2px var(--gold-light); }
-  .candidate input[type=radio] { accent-color: var(--gold); width: 16px; height: 16px; flex-shrink: 0; }
+  .candidate input[type=radio] { accent-color: var(--gold); width: 16px; height: 16px; flex-shrink: 0; pointer-events: none; }
   .candidate-name { font-size: 15px; margin-bottom: 2px; }
-  .candidate-bio { font-family: 'Arial', sans-serif; font-size: 12px; color: var(--text-muted); }
-  .review-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Arial', sans-serif;
-    font-size: 13px;
-  }
+  .candidate-bio { font-family: Arial, sans-serif; font-size: 12px; color: var(--text-muted); }
+  .review-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-family: Arial, sans-serif; font-size: 13px; }
   .review-row:last-child { border-bottom: none; }
   .review-label { color: var(--text-muted); }
   .review-val { font-weight: 600; color: var(--text); text-align: right; max-width: 60%; }
   .done-hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
   .done-icon { font-size: 52px; margin-bottom: 1rem; }
   .done-hero h2 { font-size: 24px; font-weight: normal; margin-bottom: 6px; }
-  .done-hero p { font-family: 'Arial', sans-serif; font-size: 14px; color: var(--text-muted); }
-  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
-  .result-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
-  .result-pos { font-family: 'Arial', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
-  .result-leader { font-size: 14px; }
-  .result-count { font-family: 'Arial', sans-serif; font-size: 11px; color: var(--text-muted); }
-  .admin-section { margin-bottom: 1.5rem; }
-  .admin-position { font-size: 16px; font-weight: normal; margin-bottom: 0.75rem; }
-  .admin-bar-row { margin-bottom: 10px; }
-  .admin-bar-meta { display: flex; justify-content: space-between; font-family: 'Arial', sans-serif; font-size: 12px; margin-bottom: 4px; }
-  .admin-bar-name { color: var(--text); }
-  .admin-bar-count { color: var(--text-muted); }
-  .admin-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .admin-bar-fill { height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.4s ease; }
-  .admin-bar-fill.leader { background: var(--navy); }
+  .done-hero p { font-family: Arial, sans-serif; font-size: 14px; color: var(--text-muted); }
+  .sealed-box { background: var(--navy); color: var(--white); border-radius: var(--radius); padding: 1.5rem; text-align: center; margin-top: 1rem; }
+  .sealed-box .icon { font-size: 32px; margin-bottom: 10px; }
+  .sealed-box h3 { font-size: 16px; font-weight: normal; margin-bottom: 6px; }
+  .sealed-box p { font-family: Arial, sans-serif; font-size: 13px; color: rgba(255,255,255,0.65); }
+  .admin-toggle { position: fixed; bottom: 16px; right: 16px; background: var(--navy); color: var(--white); border: none; border-radius: 99px; padding: 10px 18px; font-family: Arial, sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: 0.05em; box-shadow: 0 2px 12px rgba(26,39,68,0.25); z-index: 100; }
+  .loader { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+  .loader-dark { border-color: rgba(26,39,68,0.15); border-top-color: var(--navy); }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
   .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
   .stat-num { font-size: 26px; font-weight: normal; color: var(--navy); }
-  .stat-label { font-family: 'Arial', sans-serif; font-size: 11px; color: var(--text-muted); margin-top: 3px; }
-  .voted-list { margin-top: 1rem; }
-  .voted-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-family: 'Arial', sans-serif; font-size: 12px; }
+  .stat-label { font-family: Arial, sans-serif; font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .admin-bar-row { margin-bottom: 10px; }
+  .admin-bar-meta { display: flex; justify-content: space-between; font-family: Arial, sans-serif; font-size: 12px; margin-bottom: 4px; }
+  .admin-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .admin-bar-fill { height: 100%; background: var(--gold); border-radius: 4px; transition: width 0.4s ease; }
+  .admin-bar-fill.leader { background: var(--navy); }
+  .voted-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-family: Arial, sans-serif; font-size: 12px; }
   .voted-item:last-child { border-bottom: none; }
-  .voted-unit { font-weight: 600; color: var(--navy); }
-  .voted-who { color: var(--text-muted); }
-  .voted-time { color: var(--text-muted); font-size: 11px; }
-  .admin-toggle {
-    position: fixed; bottom: 16px; right: 16px;
-    background: var(--navy); color: var(--white);
-    border: none; border-radius: 99px;
-    padding: 10px 18px;
-    font-family: 'Arial', sans-serif;
-    font-size: 12px; font-weight: 600;
-    cursor: pointer; letter-spacing: 0.05em;
-    box-shadow: 0 2px 12px rgba(26,39,68,0.25);
-    z-index: 100;
-  }
-  .loader { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
-  .loader-dark { border-color: rgba(26,39,68,0.2); border-top-color: var(--navy); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 480px) {
-    .result-grid { grid-template-columns: 1fr; }
-    .stat-grid { grid-template-columns: 1fr 1fr; }
-  }
+  .voted-unit { font-weight: 600; color: var(--navy); min-width: 60px; }
+  .voted-who { color: var(--text-muted); flex: 1; padding: 0 10px; }
+  .voted-time { color: var(--text-muted); font-size: 11px; white-space: nowrap; }
+  .resend-link { font-family: Arial, sans-serif; font-size: 12px; color: var(--gold); text-decoration: underline; cursor: pointer; background: none; border: none; padding: 0; margin-top: 10px; display: inline-block; }
+  .resend-link:disabled { color: var(--text-muted); cursor: not-allowed; text-decoration: none; }
+  .admin-lock { max-width: 320px; margin: 3rem auto; }
+  @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
@@ -265,42 +119,66 @@
 <div class="header">
   <div class="header-eyebrow">Annual General Body Meeting</div>
   <h1>Building Corporation — Official Ballot</h1>
-  <p>Each unit is entitled to one vote. All submissions are final.</p>
+  <p>Verified residents only &nbsp;·&nbsp; One vote per unit &nbsp;·&nbsp; Results sealed until announced</p>
 </div>
 
 <div class="container">
 
-  <!-- STEP 1: Voter ID -->
-  <div id="step-voter" class="step active">
-    <div id="voter-alert" style="display:none"></div>
+  <!-- STEP 1: Email entry -->
+  <div id="step-email" class="step active">
+    <div id="email-alert" style="display:none"></div>
     <div class="card">
-      <div class="card-title">Voter identification</div>
-      <label>Full name</label>
-      <input type="text" id="voter-name" placeholder="e.g. Sarah Johnson" autocomplete="name" />
-      <label>Phone number</label>
-      <input type="tel" id="voter-phone" placeholder="e.g. 416-555-0192" autocomplete="tel" />
-      <label>Floor</label>
-      <div class="unit-grid">
-        <select id="unit-floor" onchange="checkUnit()">
-          <option value="">Select floor</option>
-          <option>1</option><option>2</option><option>3</option><option>4</option>
-          <option>5</option><option>6</option><option>7</option><option>8</option>
-          <option>9</option><option>10</option>
-        </select>
-        <select id="unit-letter" onchange="checkUnit()">
-          <option value="">Select unit</option>
-          <option value="A">Unit A</option><option value="B">Unit B</option>
-          <option value="C">Unit C</option><option value="D">Unit D</option>
-        </select>
-      </div>
-      <div id="unit-chip" style="display:none"></div>
+      <div class="card-title">Voter verification</div>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6">
+        Enter the email address registered with the building. We'll send you a one-time code to verify your identity.
+      </p>
+      <label>Email address</label>
+      <input type="email" id="voter-email" placeholder="you@example.com" autocomplete="email" />
     </div>
-    <button class="btn btn-primary" onclick="proceedToVote()">
-      Continue to ballot &rarr;
+    <button class="btn btn-primary" id="btn-send-otp" onclick="sendOTP()">
+      Send verification code &rarr;
     </button>
   </div>
 
-  <!-- STEP 2: Ballot -->
+  <!-- STEP 2: OTP verification -->
+  <div id="step-otp" class="step">
+    <div id="otp-alert" style="display:none"></div>
+    <div class="card">
+      <div class="card-title">Enter verification code</div>
+      <div class="alert alert-info" style="margin-bottom:1rem">
+        <span>📧</span>
+        <span>A 6-digit code was sent to <strong id="otp-email-display"></strong>. Check your inbox (and spam folder).</span>
+      </div>
+      <label>6-digit code</label>
+      <input type="text" id="otp-code" class="otp-input" placeholder="— — — — — —" maxlength="6" inputmode="numeric" autocomplete="one-time-code" />
+      <button class="resend-link" id="btn-resend" onclick="resendOTP()">Resend code</button>
+    </div>
+    <button class="btn btn-primary" id="btn-verify-otp" onclick="verifyOTP()">
+      Verify &amp; continue &rarr;
+    </button>
+    <button class="btn" onclick="showStep('step-email')" style="margin-top:8px">
+      &larr; Use a different email
+    </button>
+  </div>
+
+  <!-- STEP 3: Voter name -->
+  <div id="step-name" class="step">
+    <div id="name-alert" style="display:none"></div>
+    <div class="card">
+      <div class="card-title">One last thing</div>
+      <div class="alert alert-success" style="margin-bottom:1rem">
+        <span>✅</span>
+        <span>Email verified. Unit <strong id="verified-unit"></strong> confirmed.</span>
+      </div>
+      <label>Your full name</label>
+      <input type="text" id="voter-name" placeholder="e.g. Sarah Johnson" autocomplete="name" />
+    </div>
+    <button class="btn btn-primary" onclick="proceedToBallot()">
+      Open my ballot &rarr;
+    </button>
+  </div>
+
+  <!-- STEP 4: Ballot -->
   <div id="step-vote" class="step">
     <div class="progress-wrap">
       <div class="progress-meta">
@@ -318,12 +196,12 @@
     </div>
   </div>
 
-  <!-- STEP 3: Review -->
+  <!-- STEP 5: Review -->
   <div id="step-review" class="step">
     <div class="card">
       <div class="card-title">Voter details</div>
       <div class="review-row"><span class="review-label">Name</span><span class="review-val" id="rv-name"></span></div>
-      <div class="review-row"><span class="review-label">Phone</span><span class="review-val" id="rv-phone"></span></div>
+      <div class="review-row"><span class="review-label">Email</span><span class="review-val" id="rv-email"></span></div>
       <div class="review-row"><span class="review-label">Unit</span><span class="review-val" id="rv-unit"></span></div>
     </div>
     <div class="card">
@@ -331,8 +209,8 @@
       <div id="rv-votes"></div>
     </div>
     <div class="alert alert-warn">
-      <span class="alert-icon">⚠️</span>
-      <span>Once submitted, your vote cannot be changed. Each unit may only vote once. Please review carefully.</span>
+      <span>⚠️</span>
+      <span>Once submitted, your vote cannot be changed. Each unit may only vote once. Please review carefully before submitting.</span>
     </div>
     <div class="btn-row">
       <button class="btn" onclick="goBackToVote()">Edit votes</button>
@@ -340,42 +218,65 @@
     </div>
   </div>
 
-  <!-- STEP 4: Done -->
+  <!-- STEP 6: Done -->
   <div id="step-done" class="step">
     <div class="done-hero">
-      <div class="done-icon">✅</div>
+      <div class="done-icon">🗳️</div>
       <h2>Ballot submitted</h2>
       <p id="done-msg"></p>
     </div>
     <div class="alert alert-success">
-      <span class="alert-icon">🔒</span>
+      <span>🔒</span>
       <span>Unit <strong id="done-unit"></strong> has been recorded. Your vote is final and securely stored.</span>
     </div>
-    <div class="card">
-      <div class="card-title">Current standings</div>
-      <div class="result-grid" id="done-results"></div>
+    <div class="sealed-box">
+      <div class="icon">🔐</div>
+      <h3>Results are sealed</h3>
+      <p>Vote tallies will be revealed by the board at the General Body Meeting. Thank you for participating.</p>
     </div>
   </div>
 
-  <!-- STEP 5: Admin -->
+  <!-- STEP 7: Admin lock -->
+  <div id="step-admin-lock" class="step">
+    <div class="admin-lock">
+      <div class="card">
+        <div class="card-title">Board access</div>
+        <label>Admin password</label>
+        <input type="password" id="admin-password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkAdminPassword()" />
+        <div id="admin-lock-alert" style="display:none;margin-top:10px"></div>
+        <button class="btn btn-primary" onclick="checkAdminPassword()" style="margin-top:1rem">Unlock results</button>
+      </div>
+      <button class="btn" onclick="showStep('step-email')" style="margin-top:8px">&larr; Back to voting</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: Admin results -->
   <div id="step-admin" class="step">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
       <div>
-        <div class="header-eyebrow" style="color:var(--gold)">Admin panel</div>
+        <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Board only</div>
         <h2 style="font-size:20px;font-weight:normal">Live results</h2>
       </div>
-      <button class="btn" onclick="showStep('step-voter')" style="width:auto;margin-top:0;padding:8px 14px;font-size:12px">← Back</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="loadAdmin()" style="width:auto;margin-top:0;padding:8px 14px;font-size:12px">↻ Refresh</button>
+        <button class="btn" onclick="showStep('step-email')" style="width:auto;margin-top:0;padding:8px 14px;font-size:12px">← Exit</button>
+      </div>
     </div>
-    <div id="admin-content"><div style="text-align:center;padding:2rem;color:var(--text-muted)"><div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…</div></div>
+    <div id="admin-content">
+      <div style="text-align:center;padding:2rem;color:var(--text-muted)">
+        <div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…
+      </div>
+    </div>
   </div>
 
 </div>
 
-<button class="admin-toggle" onclick="openAdmin()">⚙ Admin</button>
+<button class="admin-toggle" onclick="showStep('step-admin-lock')">⚙ Board</button>
 
 <script>
 const SUPABASE_URL = 'https://nvtjamohvxzdzlmteeap.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_WxNYg1SrLk68QGqtkpB43Q_-ZPBJPaR';
+const ADMIN_PASSWORD = '1234Tree';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -414,7 +315,7 @@ const POSITIONS = [
 
 let currentPos = 0;
 let selections = {};
-let voterInfo = {};
+let voterInfo = { email: '', unit: '', name: '' };
 
 function showStep(id) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -422,67 +323,122 @@ function showStep(id) {
   window.scrollTo(0, 0);
 }
 
-function showAlert(id, type, html) {
+function showAlert(id, type, msg) {
   const el = document.getElementById(id);
   el.className = 'alert alert-' + type;
-  el.innerHTML = html;
+  el.innerHTML = msg;
   el.style.display = 'flex';
 }
 
-async function checkUnit() {
-  const floor = document.getElementById('unit-floor').value;
-  const letter = document.getElementById('unit-letter').value;
-  const chip = document.getElementById('unit-chip');
-  if (!floor || !letter) { chip.style.display = 'none'; return; }
-  const unit = floor + letter;
-  chip.style.display = 'inline-flex';
-  chip.innerHTML = '<span>Checking…</span>';
-  chip.className = 'unit-chip';
-  const { data } = await db.from('votes').select('unit').eq('unit', unit).maybeSingle();
-  if (data) {
-    chip.className = 'unit-chip chip-voted';
-    chip.innerHTML = '🔴 Unit ' + unit + ' has already voted';
-  } else {
-    chip.className = 'unit-chip chip-open';
-    chip.innerHTML = '🟢 Unit ' + unit + ' — eligible to vote';
-  }
+function hideAlert(id) {
+  document.getElementById(id).style.display = 'none';
 }
 
-async function proceedToVote() {
-  const name = document.getElementById('voter-name').value.trim();
-  const phone = document.getElementById('voter-phone').value.trim();
-  const floor = document.getElementById('unit-floor').value;
-  const letter = document.getElementById('unit-letter').value;
+function setBtn(id, loading, text) {
+  const btn = document.getElementById(id);
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<div class="loader"></div> ' + text : text;
+}
 
-  if (!name) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please enter your full name.</span>'); return; }
-  if (!phone) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please enter your phone number.</span>'); return; }
-  if (!floor || !letter) { showAlert('voter-alert', 'danger', '<span class="alert-icon">✖</span><span>Please select your floor and unit.</span>'); return; }
+// ── STEP 1: Send OTP ──
+async function sendOTP() {
+  const email = document.getElementById('voter-email').value.trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    showAlert('email-alert', 'danger', '<span>✖</span><span>Please enter a valid email address.</span>');
+    return;
+  }
+  hideAlert('email-alert');
+  setBtn('btn-send-otp', true, 'Checking…');
 
-  const unit = floor + letter;
-  const { data } = await db.from('votes').select('unit').eq('unit', unit).maybeSingle();
-  if (data) {
-    showAlert('voter-alert', 'danger', '<span class="alert-icon">🔴</span><span>Unit ' + unit + ' has already submitted a ballot. Each unit may only vote once. If you believe this is an error, please contact the building administrator.</span>');
+  // Check whitelist
+  const { data: wl, error: wlErr } = await db.from('voter_whitelist').select('unit, email').eq('email', email).maybeSingle();
+  if (wlErr || !wl) {
+    showAlert('email-alert', 'danger', '<span>🚫</span><span>This email is not registered as a voter. Please use the email address on file with the building administration.</span>');
+    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
     return;
   }
 
-  document.getElementById('voter-alert').style.display = 'none';
-  voterInfo = { name, phone, unit, floor, letter };
+  // Check if unit already voted
+  const { data: voted } = await db.from('votes').select('unit').eq('unit', wl.unit).maybeSingle();
+  if (voted) {
+    showAlert('email-alert', 'danger', '<span>🔴</span><span>Unit <strong>' + wl.unit + '</strong> has already submitted a ballot. Each unit may only vote once. If you believe this is an error, contact the building administrator.</span>');
+    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
+    return;
+  }
+
+  // Send OTP via Supabase Auth
+  const { error: otpErr } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+  if (otpErr) {
+    showAlert('email-alert', 'danger', '<span>✖</span><span>Failed to send code: ' + otpErr.message + '. Please try again.</span>');
+    setBtn('btn-send-otp', false, 'Send verification code &rarr;');
+    return;
+  }
+
+  voterInfo.email = email;
+  voterInfo.unit = wl.unit;
+  document.getElementById('otp-email-display').textContent = email;
+  setBtn('btn-send-otp', false, 'Send verification code &rarr;');
+  showStep('step-otp');
+}
+
+// ── STEP 2: Verify OTP ──
+async function verifyOTP() {
+  const code = document.getElementById('otp-code').value.trim();
+  if (code.length !== 6) {
+    showAlert('otp-alert', 'danger', '<span>✖</span><span>Please enter the 6-digit code from your email.</span>');
+    return;
+  }
+  hideAlert('otp-alert');
+  setBtn('btn-verify-otp', true, 'Verifying…');
+
+  const { error } = await db.auth.verifyOtp({ email: voterInfo.email, token: code, type: 'email' });
+  if (error) {
+    showAlert('otp-alert', 'danger', '<span>✖</span><span>Invalid or expired code. Please check your email and try again.</span>');
+    setBtn('btn-verify-otp', false, 'Verify &amp; continue &rarr;');
+    return;
+  }
+
+  document.getElementById('verified-unit').textContent = voterInfo.unit;
+  setBtn('btn-verify-otp', false, 'Verify &amp; continue &rarr;');
+  showStep('step-name');
+}
+
+async function resendOTP() {
+  const btn = document.getElementById('btn-resend');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  await db.auth.signInWithOtp({ email: voterInfo.email, options: { shouldCreateUser: true } });
+  btn.textContent = 'Code resent ✓';
+  setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend code'; }, 30000);
+}
+
+// ── STEP 3: Name & proceed ──
+function proceedToBallot() {
+  const name = document.getElementById('voter-name').value.trim();
+  if (!name) {
+    showAlert('name-alert', 'danger', '<span>✖</span><span>Please enter your full name.</span>');
+    return;
+  }
+  hideAlert('name-alert');
+  voterInfo.name = name;
   currentPos = 0;
   selections = {};
   showStep('step-vote');
   renderPosition();
 }
 
+// ── STEP 4: Ballot ──
 function renderPosition() {
   const pos = POSITIONS[currentPos];
   const pct = Math.round(((currentPos + 1) / POSITIONS.length) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-label').textContent = 'Position ' + (currentPos + 1) + ' of ' + POSITIONS.length;
   document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('btn-back').style.display = currentPos === 0 ? 'none' : 'flex';
-  document.getElementById('btn-next').style.gridColumn = currentPos === 0 ? '1 / -1' : 'auto';
-  const isLast = currentPos === POSITIONS.length - 1;
-  document.getElementById('btn-next').textContent = isLast ? 'Review ballot →' : 'Next →';
+  const backBtn = document.getElementById('btn-back');
+  const nextBtn = document.getElementById('btn-next');
+  backBtn.style.display = currentPos === 0 ? 'none' : 'flex';
+  nextBtn.style.gridColumn = currentPos === 0 ? '1 / -1' : 'auto';
+  nextBtn.textContent = currentPos === POSITIONS.length - 1 ? 'Review ballot →' : 'Next →';
 
   const sel = selections[pos.id] || null;
   let html = '<div class="position-heading">' + pos.title + '</div>';
@@ -490,7 +446,7 @@ function renderPosition() {
   pos.candidates.forEach(c => {
     const checked = sel === c.name;
     html += `<label class="candidate ${checked ? 'selected' : ''}" onclick="selectCandidate('${pos.id}', '${c.name}', this)">
-      <input type="radio" name="pos" value="${c.name}" ${checked ? 'checked' : ''} style="pointer-events:none">
+      <input type="radio" name="pos" value="${c.name}" ${checked ? 'checked' : ''}>
       <div>
         <div class="candidate-name">${c.name}</div>
         <div class="candidate-bio">${c.bio}</div>
@@ -504,28 +460,24 @@ function selectCandidate(posId, name, el) {
   selections[posId] = name;
   el.closest('.card').querySelectorAll('.candidate').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
+  const warn = el.closest('.card').querySelector('.selection-warn');
+  if (warn) warn.remove();
 }
 
 function nextPos() {
   const pos = POSITIONS[currentPos];
   if (!selections[pos.id]) {
-    const existing = document.querySelector('.selection-warn');
-    if (!existing) {
+    if (!document.querySelector('.selection-warn')) {
       const warn = document.createElement('div');
       warn.className = 'alert alert-warn selection-warn';
       warn.style.marginTop = '12px';
-      warn.innerHTML = '<span class="alert-icon">⚠️</span><span>Please select a candidate for ' + pos.title + ' before continuing.</span>';
+      warn.innerHTML = '<span>⚠️</span><span>Please select a candidate for <strong>' + pos.title + '</strong> before continuing.</span>';
       document.querySelector('.card').appendChild(warn);
     }
     return;
   }
-  if (currentPos < POSITIONS.length - 1) {
-    currentPos++;
-    renderPosition();
-  } else {
-    buildReview();
-    showStep('step-review');
-  }
+  if (currentPos < POSITIONS.length - 1) { currentPos++; renderPosition(); }
+  else { buildReview(); showStep('step-review'); }
 }
 
 function prevPos() {
@@ -538,9 +490,10 @@ function goBackToVote() {
   renderPosition();
 }
 
+// ── STEP 5: Review ──
 function buildReview() {
   document.getElementById('rv-name').textContent = voterInfo.name;
-  document.getElementById('rv-phone').textContent = voterInfo.phone;
+  document.getElementById('rv-email').textContent = voterInfo.email;
   document.getElementById('rv-unit').textContent = 'Unit ' + voterInfo.unit;
   let html = '';
   POSITIONS.forEach(pos => {
@@ -549,15 +502,14 @@ function buildReview() {
   document.getElementById('rv-votes').innerHTML = html;
 }
 
+// ── STEP 6: Submit ──
 async function submitVote() {
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="loader"></div> Submitting…';
+  setBtn('btn-submit', true, 'Submitting…');
 
   const payload = {
     unit: voterInfo.unit,
+    email: voterInfo.email,
     voter_name: voterInfo.name,
-    voter_phone: voterInfo.phone,
     president: selections['president'],
     secretary: selections['secretary'],
     treasurer: selections['treasurer'],
@@ -566,50 +518,44 @@ async function submitVote() {
   };
 
   const { error } = await db.from('votes').insert(payload);
-
   if (error) {
-    btn.disabled = false;
-    btn.textContent = 'Submit ballot';
+    setBtn('btn-submit', false, 'Submit ballot');
     if (error.code === '23505') {
-      alert('Unit ' + voterInfo.unit + ' has already voted. Duplicate submissions are not allowed.');
+      showAlert('otp-alert', 'danger', '<span>🔴</span><span>Unit ' + voterInfo.unit + ' has already voted.</span>');
     } else {
-      alert('Submission failed: ' + error.message + '. Please try again.');
+      alert('Submission error: ' + error.message);
     }
     return;
   }
 
   document.getElementById('done-unit').textContent = 'Unit ' + voterInfo.unit;
-  document.getElementById('done-msg').textContent = 'Thank you, ' + voterInfo.name + '. Your ballot has been securely recorded.';
-
-  const { data: allVotes } = await db.from('votes').select('president,secretary,treasurer,maintenance_director,communications_director');
-  const tallies = {};
-  POSITIONS.forEach(p => tallies[p.id] = {});
-  (allVotes || []).forEach(row => {
-    POSITIONS.forEach(p => {
-      if (row[p.id]) tallies[p.id][row[p.id]] = (tallies[p.id][row[p.id]] || 0) + 1;
-    });
-  });
-  let resHtml = '';
-  POSITIONS.forEach(pos => {
-    const t = tallies[pos.id];
-    const leader = Object.entries(t).sort((a, b) => b[1] - a[1])[0];
-    resHtml += '<div class="result-card"><div class="result-pos">' + pos.title + '</div><div class="result-leader">' + (leader ? leader[0] : '—') + '</div><div class="result-count">' + (leader ? leader[1] + ' vote' + (leader[1] !== 1 ? 's' : '') : '') + '</div></div>';
-  });
-  document.getElementById('done-results').innerHTML = resHtml;
+  document.getElementById('done-msg').textContent = 'Thank you, ' + voterInfo.name + '. Your ballot has been securely recorded and sealed.';
   showStep('step-done');
 }
 
-async function openAdmin() {
-  showStep('step-admin');
-  const { data: allVotes, error } = await db.from('votes').select('*').order('submitted_at', { ascending: false });
-  if (error || !allVotes) {
-    document.getElementById('admin-content').innerHTML = '<div class="alert alert-danger"><span>Failed to load results.</span></div>';
-    return;
+// ── Admin ──
+function checkAdminPassword() {
+  const pw = document.getElementById('admin-password').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('admin-password').value = '';
+    hideAlert('admin-lock-alert');
+    showStep('step-admin');
+    loadAdmin();
+  } else {
+    showAlert('admin-lock-alert', 'danger', '<span>✖</span><span>Incorrect password.</span>');
   }
-  const total = allVotes.length;
+}
+
+async function loadAdmin() {
+  document.getElementById('admin-content').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)"><div class="loader loader-dark" style="margin:0 auto 12px"></div><br>Loading results…</div>';
+
+  const { data: allVotes } = await db.from('votes').select('*').order('submitted_at', { ascending: false });
+  const votes = allVotes || [];
+  const total = votes.length;
+
   const tallies = {};
   POSITIONS.forEach(p => tallies[p.id] = {});
-  allVotes.forEach(row => {
+  votes.forEach(row => {
     POSITIONS.forEach(p => {
       if (row[p.id]) tallies[p.id][row[p.id]] = (tallies[p.id][row[p.id]] || 0) + 1;
     });
@@ -618,7 +564,7 @@ async function openAdmin() {
   let html = '<div class="stat-grid">';
   html += '<div class="stat-card"><div class="stat-num">' + total + '</div><div class="stat-label">Votes cast</div></div>';
   html += '<div class="stat-card"><div class="stat-num">40</div><div class="stat-label">Total units</div></div>';
-  html += '<div class="stat-card"><div class="stat-num">' + Math.round((total / 40) * 100) + '%</div><div class="stat-label">Participation</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">' + Math.round((total / 40) * 100) + '%</div><div class="stat-label">Turnout</div></div>';
   html += '</div>';
 
   POSITIONS.forEach(pos => {
@@ -626,24 +572,24 @@ async function openAdmin() {
     const posTotal = Object.values(t).reduce((a, b) => a + b, 0);
     const sorted = Object.entries(t).sort((a, b) => b[1] - a[1]);
     const leaderName = sorted[0]?.[0];
-    html += '<div class="card admin-section"><div class="card-title">' + pos.title + '</div>';
+    html += '<div class="card" style="margin-bottom:1rem"><div class="card-title">' + pos.title + '</div>';
     pos.candidates.forEach(c => {
-      const votes = t[c.name] || 0;
-      const pct = posTotal > 0 ? Math.round((votes / posTotal) * 100) : 0;
-      const isLeader = c.name === leaderName && votes > 0;
-      html += '<div class="admin-bar-row"><div class="admin-bar-meta"><span class="admin-bar-name">' + c.name + (isLeader ? ' 🏆' : '') + '</span><span class="admin-bar-count">' + votes + ' vote' + (votes !== 1 ? 's' : '') + ' · ' + pct + '%</span></div><div class="admin-bar-bg"><div class="admin-bar-fill' + (isLeader ? ' leader' : '') + '" style="width:' + pct + '%"></div></div></div>';
+      const v = t[c.name] || 0;
+      const pct = posTotal > 0 ? Math.round((v / posTotal) * 100) : 0;
+      const isLeader = c.name === leaderName && v > 0;
+      html += '<div class="admin-bar-row"><div class="admin-bar-meta"><span>' + c.name + (isLeader ? ' 🏆' : '') + '</span><span style="color:var(--text-muted)">' + v + ' vote' + (v !== 1 ? 's' : '') + ' · ' + pct + '%</span></div><div class="admin-bar-bg"><div class="admin-bar-fill' + (isLeader ? ' leader' : '') + '" style="width:' + pct + '%"></div></div></div>';
     });
     html += '</div>';
   });
 
-  html += '<div class="card"><div class="card-title">Votes log — ' + total + ' units</div><div class="voted-list">';
-  if (allVotes.length === 0) {
-    html += '<div style="color:var(--text-muted);font-family:Arial,sans-serif;font-size:13px;padding:1rem 0">No votes yet.</div>';
+  html += '<div class="card"><div class="card-title">Voter log — ' + total + ' submitted</div><div>';
+  if (votes.length === 0) {
+    html += '<p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text-muted);padding:1rem 0">No votes yet.</p>';
   }
-  allVotes.forEach(row => {
+  votes.forEach(row => {
     const t = new Date(row.submitted_at);
-    const timeStr = t.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) + ' · ' + t.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
-    html += '<div class="voted-item"><span class="voted-unit">Unit ' + row.unit + '</span><span class="voted-who">' + row.voter_name + '</span><span class="voted-time">' + timeStr + '</span></div>';
+    const ts = t.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) + ' · ' + t.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+    html += '<div class="voted-item"><span class="voted-unit">Unit ' + row.unit + '</span><span class="voted-who">' + row.voter_name + '</span><span class="voted-time">' + ts + '</span></div>';
   });
   html += '</div></div>';
 
